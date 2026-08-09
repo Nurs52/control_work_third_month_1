@@ -4,7 +4,7 @@ void main() {
   runApp(CardGameApp());
 }
 
-// 1. МОДЕЛЬ ДАННЫХ
+
 class GameCard {
   bool isFlipped;
   bool isMatched;
@@ -17,18 +17,18 @@ class GameCard {
   });
 }
 
-// 2. ВИДЖЕТ ПРИЛОЖЕНИЯ
+
 class CardGameApp extends StatefulWidget {
   @override
   State<CardGameApp> createState() => CardGameState();
 }
 
-// 3. СОСТОЯНИЕ И ЛОГИКА
+
 class CardGameState extends State<CardGameApp> {
   int _mistakes = 0;
-  final int _maxMistakes = 1; // Максимальное количество ошибок по условию
+  final int _maxMistakes = 1; 
 
-  // Переменные для нижней плашки: 0 - скрыта, 1 - успех, 2 - ошибка
+ 
   int _alertStatus = 0;
   String _alertMessage = "";
 
@@ -42,7 +42,7 @@ class CardGameState extends State<CardGameApp> {
   List<int> selectedIndexes = [];
 
   void _onCardTap(int index) {
-    // Блокируем нажатия, если игра окончена, карточка открыта или ждем переворота 2-х карт
+    
     if (_mistakes > _maxMistakes ||
         myCards[index].isMatched ||
         myCards[index].isFlipped ||
@@ -53,7 +53,7 @@ class CardGameState extends State<CardGameApp> {
     setState(() {
       myCards[index].isFlipped = true;
       selectedIndexes.add(index);
-      _alertStatus = 0; // Прячем алерт снизу при новом клике
+      _alertStatus = 0; 
 
       if (selectedIndexes.length == 2) {
         _checkMatch();
@@ -66,7 +66,7 @@ class CardGameState extends State<CardGameApp> {
     int secondIndex = selectedIndexes[1];
 
     if (myCards[firstIndex].color == myCards[secondIndex].color) {
-      // СОВПАДЕНИЕ
+      
       setState(() {
         myCards[firstIndex].isMatched = true;
         myCards[secondIndex].isMatched = true;
@@ -79,7 +79,7 @@ class CardGameState extends State<CardGameApp> {
       });
       selectedIndexes.clear();
     } else {
-      // ОШИБКА
+     
       setState(() {
         _mistakes++;
         _alertStatus = 2;
@@ -92,7 +92,7 @@ class CardGameState extends State<CardGameApp> {
         }
       });
 
-      // Задержка перед переворотом карточек обратно
+      
       Future.delayed(const Duration(seconds: 1), () {
         if (mounted) {
           setState(() {
@@ -105,39 +105,38 @@ class CardGameState extends State<CardGameApp> {
     }
   }
 
-  // Красивые цвета как на макете
+  
   Color _getCardColor(String colorString) {
     if (colorString == "blue") return const Color(0xFF1656B9);
     if (colorString == "red") return const Color(0xFFCE363B);
     return Colors.grey;
   }
 
-  // 4. ВЕРСТКА ИНТЕРФЕЙСА
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: const Color(0xFFF6F6F6), // Светло-серый фон вокруг доски
+        backgroundColor: const Color(0xFFF6F6F6),
         body: Center(
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(24), // Закругление доски
+              borderRadius: BorderRadius.circular(24),
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Доска сжимается под контент
+              mainAxisSize: MainAxisSize.min, 
               children: [
-                // Заголовок
+                
                 const Text(
                   "Найти пару 🎯",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 
-                // Подзаголовок
+               
                 const Text(
                   "Нажми на два прямоугольника одного цвета",
                   style: TextStyle(fontSize: 13, color: Colors.grey),
@@ -145,7 +144,7 @@ class CardGameState extends State<CardGameApp> {
                 ),
                 const SizedBox(height: 24),
 
-                // Счетчик ошибок (Пилюля)
+               
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
@@ -175,15 +174,15 @@ class CardGameState extends State<CardGameApp> {
                 ),
                 const SizedBox(height: 24),
 
-                // Сетка карточек
+                
                 GridView.builder(
-                  shrinkWrap: true, // Обязательно, чтобы GridView работал внутри Column
-                  physics: const NeverScrollableScrollPhysics(), // Отключаем скролл
+                  shrinkWrap: true, 
+                  physics: const NeverScrollableScrollPhysics(), 
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
-                    childAspectRatio: 1.4, // Делаем их прямоугольными
+                    childAspectRatio: 1.4, 
                   ),
                   itemCount: myCards.length,
                   itemBuilder: (context, index) {
@@ -193,7 +192,7 @@ class CardGameState extends State<CardGameApp> {
                     return GestureDetector(
                       onTap: () => _onCardTap(index),
                       child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300), // Плавная смена цвета
+                        duration: const Duration(milliseconds: 300), 
                         decoration: BoxDecoration(
                           color: isOpen ? _getCardColor(card.color) : Colors.white,
                           borderRadius: BorderRadius.circular(16),
@@ -203,7 +202,7 @@ class CardGameState extends State<CardGameApp> {
                         ),
                         child: isOpen
                             ? Center(
-                                // Маленький круглый блик внутри цветной карточки
+                               
                                 child: Container(
                                   width: 24,
                                   height: 24,
@@ -218,13 +217,13 @@ class CardGameState extends State<CardGameApp> {
                                   ),
                                 ),
                               )
-                            : null, // Если карточка белая, внутри ничего нет
+                            : null, 
                       ),
                     );
                   },
                 ),
 
-                // Нижняя плашка (Уведомление)
+                
                 if (_alertStatus != 0) ...[
                   const SizedBox(height: 24),
                   Container(
@@ -233,7 +232,7 @@ class CardGameState extends State<CardGameApp> {
                     decoration: BoxDecoration(
                       color: _alertStatus == 1 
                           ? Colors.green.shade50 
-                          : const Color.fromARGB(255, 255, 235, 235), // Нежно-красный
+                          : const Color.fromARGB(255, 255, 235, 235),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
