@@ -4,7 +4,6 @@ void main() {
   runApp(CardGameApp());
 }
 
-
 class GameCard {
   bool isFlipped;
   bool isMatched;
@@ -16,7 +15,6 @@ class GameCard {
     required this.color,
   });
 }
-
 
 class CardGameApp extends StatefulWidget {
   @override
